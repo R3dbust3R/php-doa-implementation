@@ -1,6 +1,11 @@
 <?php
 
+
+namespace app\model;
+use Connect_database, PDO, InvalidArgumentException;
+
 require 'database.php';
+
 
 class User extends Connect_database {
     
@@ -14,11 +19,10 @@ class User extends Connect_database {
     protected $country;
     protected $password;
 
-
     /**
      * constuction method
      */
-    public function __construct($name, $email, $phone, $country, $password) {
+    public function __construct($name = null, $email = null, $phone = null, $country = null, $password = null) {
         $this->name = $name;
         $this->email = $email;
         $this->phone = $phone;
@@ -88,8 +92,16 @@ class User extends Connect_database {
      * fetch all users from the database
      */
     public static function find_all() {
-        return static::connect_database()->query('SELECT * FROM users')
-        ->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $stmt = static::connect_database()->query('SELECT * FROM users');
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'User');
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * fetch one user
+     */
+    public static function find($id) {
+        return current(static::where('id', $id, '='));
     }
 
     /**
@@ -113,9 +125,13 @@ class User extends Connect_database {
         
         $stmt->bindParam(':value', $value);
         $stmt->execute();
-        
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'User');
+        return $stmt->fetchAll();
+
     }
+
+    
     
 
 

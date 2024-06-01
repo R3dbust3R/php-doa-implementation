@@ -1,13 +1,11 @@
 <?php
 
 
-
-require 'app/controller/user_controller.php';
-
+use app\autoloading\Autoloader;
 
 
-foreach (User_controller::find_all() as $user) {
-    var_dump($user);
-    echo "<br>";
-}
+require ('app/autoloading/autoloader.php'); Autoloader::init();
 
+use app\controller\User_controller;
+
+$otmane = new User_controller('otmane', 'otmane@cd.cc', '918-1238', 'Ma', 'HC2KD4I');
